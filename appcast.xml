@@ -6,29 +6,31 @@
         <description>ProcrastiNaut update feed</description>
         <language>en</language>
 
-        <!-- Add new <item> blocks here for each release. Example:
-
         <item>
-            <title>Version 1.0.1</title>
-            <sparkle:version>2</sparkle:version>
-            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+            <title>Version 1.0.0</title>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <description><![CDATA[
-                <h2>What's New</h2>
+                <h2>ProcrastiNaut 1.0.0</h2>
                 <ul>
-                    <li>Bug fixes and improvements</li>
+                    <li>Initial release</li>
+                    <li>Calendar and reminder integration</li>
+                    <li>AI-powered task scheduling</li>
+                    <li>Menu bar quick access</li>
+                    <li>Planner window with day, week, month, and year views</li>
+                    <li>Quick Chat for fast event and reminder creation</li>
+                    <li>Gamification with streaks and achievements</li>
                 </ul>
             ]]></description>
-            <pubDate>Mon, 01 Jan 2026 12:00:00 +0000</pubDate>
+            <pubDate>Mon, 23 Feb 2026 02:18:01 +0000</pubDate>
             <enclosure
-                url="https://github.com/lsukev/procrastinaut/releases/download/v1.0.1/ProcrastiNaut-1.0.1.zip"
+                url="https://github.com/lsukev/procrastinaut/releases/download/v1.0.0/ProcrastiNaut-1.0.0.zip"
                 type="application/octet-stream"
-                sparkle:edSignature="SIGNATURE_FROM_SIGN_UPDATE_TOOL"
-                length="FILE_SIZE_IN_BYTES"
+                sparkle:edSignature="DAQ7DTNCaXdwix/h6LNrgCuCnMuDljXB73ereP+YoUmUfwfDivWxa8W84oeTT6hUPFIIIjM+4ReKZDuGSJx1Bw=="
+                length="6678949"
             />
         </item>
-
-        -->
 
     </channel>
 </rss>
