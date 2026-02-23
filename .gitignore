@@ -1,0 +1,38 @@
+# Xcode
+build/
+DerivedData/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+xcuserdata/
+
+# XcodeGen generated project
+*.xcodeproj
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# macOS
+.DS_Store
+*.swp
+*~
+.fseventsd
+.Spotlight-V100
+.Trashes
+
+# App signing
+*.mobileprovision
+*.p12
+
+# Archives
+*.xcarchive
+
+# Sparkle private key (NEVER commit)
+sparkle_private_key
+eddsa_private_key
+
+# Environment / secrets
+.env
+*.key

@@ -1,0 +1,69 @@
+name: ProcrastiNaut
+options:
+  bundleIdPrefix: com.procrastinaut
+  deploymentTarget:
+    macOS: "14.0"
+  groupSortPosition: top
+  generateEmptyDirectories: true
+
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    version: 2.7.0
+
+schemes:
+  ProcrastiNaut:
+    build:
+      targets:
+        ProcrastiNaut: all
+        ProcrastiNautWidget: all
+    run:
+      config: Debug
+    profile:
+      config: Release
+    archive:
+      config: Release
+
+targets:
+  ProcrastiNaut:
+    type: application
+    platform: macOS
+    sources:
+      - ProcrastiNaut
+    dependencies:
+      - target: ProcrastiNautWidget
+      - package: Sparkle
+    settings:
+      base:
+        INFOPLIST_FILE: ProcrastiNaut/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ProcrastiNaut/ProcrastiNaut.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.procrastinaut.app
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        ENABLE_HARDENED_RUNTIME: YES
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 38ZD3H23A8
+
+  ProcrastiNautWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - ProcrastiNautWidget
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.procrastinaut.app.widget
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: ProcrastiNaut Widget
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 38ZD3H23A8
