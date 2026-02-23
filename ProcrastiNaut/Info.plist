@@ -48,8 +48,8 @@
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>ProcrastiNaut uses your location to show local weather on your calendar.</string>
     <key>SUFeedURL</key>
-    <string>https://raw.githubusercontent.com/procrastinaut/procrastinaut/main/appcast.xml</string>
+    <string>https://raw.githubusercontent.com/lsukev/procrastinaut/main/appcast.xml</string>
     <key>SUPublicEDKey</key>
-    <string></string>
+    <string>PotKEia3bpjZ9z9AO8K8y2V45w7ea15mE2RsUuqTTq8=</string>
 </dict>
 </plist>
