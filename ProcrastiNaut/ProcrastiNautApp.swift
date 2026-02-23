@@ -40,6 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var rescheduleLearning: RescheduleLearningEngine?
     private var quickChatController: QuickChatPanelController?
     private var mouseActivationMonitor: Any?
+    private var midnightTimer: Timer?
     var modelContainer: ModelContainer?
 
     static var shared: AppDelegate?
@@ -56,11 +57,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         AppDelegate.shared = self
 
-        // Set the app icon explicitly for LSUIElement apps so notifications
-        // and system dialogs show the correct icon instead of a generic one.
-        if let icon = NSImage(named: "AppIcon") {
-            NSApp.applicationIconImage = icon
-        }
+        // Set the app icon with day number overlay for LSUIElement apps
+        updateDockIcon()
+        scheduleMidnightIconRefresh()
 
         // Migrate viewable calendar IDs from monitored for existing users
         UserSettings.shared.migrateViewableCalendarsIfNeeded()
@@ -370,9 +369,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             NSApp.setActivationPolicy(targetPolicy)
             if targetPolicy == .regular {
                 // LSUIElement apps need the icon set explicitly when switching to .regular
-                if let icon = NSImage(named: "AppIcon") {
-                    NSApp.applicationIconImage = icon
-                }
+                updateDockIcon()
                 // Don't call NSApp.activate() here — let the mouse monitor or
                 // explicit user actions (openPlanner/openSettings) handle activation
                 // so we never steal focus from other apps.
@@ -417,9 +414,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func forceActivateIfNeeded(clickedWindow: NSWindow?) {
         guard clickedWindow == plannerWindow || clickedWindow == settingsWindow else { return }
         NSApp.setActivationPolicy(.regular)
-        if let icon = NSImage(named: "AppIcon") {
-            NSApp.applicationIconImage = icon
-        }
+        updateDockIcon()
         clickedWindow?.makeKeyAndOrderFront(nil)
         NSApp.activate()
     }
@@ -429,6 +424,63 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             // Delay slightly so isVisible updates
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.updateActivationPolicy()
+            }
+        }
+    }
+
+    // MARK: - Dock Icon with Day Number
+
+    private func updateDockIcon() {
+        guard let baseIcon = NSImage(named: "AppIcon") else { return }
+        let size = NSSize(width: 128, height: 128)
+        let dayString = "\(Calendar.current.component(.day, from: Date()))"
+
+        let composited = NSImage(size: size)
+        composited.lockFocus()
+
+        // Draw the base icon
+        baseIcon.draw(in: NSRect(origin: .zero, size: size),
+                      from: .zero, operation: .sourceOver, fraction: 1.0)
+
+        // Configure the day number text
+        let fontSize: CGFloat = dayString.count == 1 ? 40 : 36
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: fontSize, weight: .bold),
+            .foregroundColor: NSColor.white,
+        ]
+        let textSize = (dayString as NSString).size(withAttributes: attrs)
+
+        // Draw a background pill behind the number
+        let pillPadding: CGFloat = 6
+        let pillWidth = textSize.width + pillPadding * 2
+        let pillHeight = textSize.height + pillPadding
+        let pillX = (size.width - pillWidth) / 2
+        let pillY: CGFloat = 4
+        let pillRect = NSRect(x: pillX, y: pillY, width: pillWidth, height: pillHeight)
+
+        NSColor(white: 0, alpha: 0.65).setFill()
+        NSBezierPath(roundedRect: pillRect, xRadius: pillHeight / 2, yRadius: pillHeight / 2).fill()
+
+        // Draw the day number centered in the pill
+        let textX = pillX + (pillWidth - textSize.width) / 2
+        let textY = pillY + (pillHeight - textSize.height) / 2
+        (dayString as NSString).draw(at: NSPoint(x: textX, y: textY), withAttributes: attrs)
+
+        composited.unlockFocus()
+        composited.isTemplate = false
+
+        NSApp.applicationIconImage = composited
+    }
+
+    private func scheduleMidnightIconRefresh() {
+        midnightTimer?.invalidate()
+        guard let midnight = Calendar.current.date(byAdding: .day, value: 1,
+                to: Calendar.current.startOfDay(for: Date())) else { return }
+        let interval = midnight.timeIntervalSinceNow + 1 // 1 second past midnight
+        midnightTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+            Task { @MainActor in
+                self?.updateDockIcon()
+                self?.scheduleMidnightIconRefresh()
             }
         }
     }
